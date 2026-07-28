@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% set panel_title = 'Admin panel' %}
+{% set links = [
+  (url_for('admin.dashboard'), 'Dashboard'),
+  (url_for('admin.users'), 'All users'),
+  (url_for('admin.users', role='farmer'), 'Farmers'),
+  (url_for('admin.users', role='customer'), 'Customers'),
+  (url_for('admin.products', status='pending'), 'Pending products'),
+  (url_for('admin.products', status='approved'), 'Approved products'),
+  (url_for('admin.products', status='rejected'), 'Rejected products'),
+  (url_for('admin.orders'), 'Orders'),
+  (url_for('admin.reports'), 'Reports'),
+  (url_for('admin.settings'), 'Settings')
+] %}
+{% block content %}
+{% include 'partials/dash_head.html' %}
+<div class="container dash-layout">
+  {% include 'partials/sidebar.html' %}
+  <div class="dash-main">{% block panel %}{% endblock %}</div>
+</div>
+{% endblock %}

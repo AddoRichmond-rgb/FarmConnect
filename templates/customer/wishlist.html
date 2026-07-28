@@ -1,0 +1,12 @@
+{% extends 'customer/_layout.html' %}
+{% set heading = 'Favourite products' %}
+{% block panel %}
+{% if rows %}
+  <div class="product-grid">
+    {% for row in rows %}{% set product = row.product %}
+      {% include 'partials/product_card.html' %}{% endfor %}
+  </div>
+{% else %}
+  <p class="empty">No favourites saved yet.</p>
+{% endif %}
+{% endblock %}

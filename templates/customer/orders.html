@@ -1,0 +1,28 @@
+{% extends 'customer/_layout.html' %}
+{% set heading = 'My orders' %}
+{% block panel %}
+{% for o in orders %}
+  <div class="card order-card">
+    <div class="order-head">
+      <div><strong>Order #{{ o.id }}</strong>
+        <div class="muted small">{{ o.created_at.strftime('%d %b %Y, %H:%M') }} ·
+          {{ {'cash':'Cash on delivery','momo':'Mobile Money','card':'Card'}[o.payment_method] }}</div></div>
+      <span class="pill pill-{{ o.status }}">{{ o.status }}</span>
+    </div>
+    <table class="table">
+      <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+      <tbody>
+        {% for i in o.items %}
+          <tr><td>{{ i.product.name }}</td><td>{{ i.quantity }}</td>
+            <td>GHS {{ '%.2f'|format(i.price) }}</td>
+            <td>GHS {{ '%.2f'|format(i.price * i.quantity) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="cart-foot"><span class="price">Total: GHS {{ '%.2f'|format(o.total) }}</span>
+      <span class="muted small">Delivering to {{ o.address }}</span></div>
+  </div>
+{% else %}
+  <p class="empty">You haven't placed any orders yet.</p>
+{% endfor %}
+{% endblock %}

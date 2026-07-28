@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Browse farm products — FarmConnect{% endblock %}
+{% block breadcrumb %}
+<div class="container breadcrumb">
+  <a href="{{ url_for('main.index') }}">Home</a> <span>/</span> <span>Products</span>
+</div>
+{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="section-head"><h1>Browse products</h1>
+    <span class="muted">{{ pagination.total }} approved item(s)</span></div>
+
+  <div class="browse-layout">
+    <aside class="filters card">
+      <form method="get">
+        <h3>Filters</h3>
+        <div class="field"><label for="q">Search</label>
+          <input id="q" name="q" value="{{ filters.get('q','') }}" placeholder="Name, description…"></div><br>
+        <div class="field"><label for="category">Category</label>
+          <select id="q" id="category" name="category"><br><br>
+            <option value="">All categories</option>
+            {% for c in categories %}
+              <option value="{{ c.id }}" {% if filters.get('category')|string == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select></div><br>
+        <div class="field"><label for="location">Location</label>
+          <input id="q" id="location" name="location" value="{{ filters.get('location','') }}"></div><br>
+        <div class="two-col">
+          <div class="field"><label for="min_price">Min price</label>
+            <input id="q" id="min_price" name="min_price" type="number" step="0.01" min="0" value="{{ filters.get('min_price','') }}"></div>
+          <div class="field"><label for="max_price">Max price</label>
+            <input id="q" id="max_price" name="max_price" type="number" step="0.01" min="0" value="{{ filters.get('max_price','') }}"></div><br>
+        </div>
+        <div class="field"><label for="sort">Sort by</label>
+          <select id="q" id="sort" name="sort">
+            <option value="newest" {% if filters.get('sort')=='newest' %}selected{% endif %}>Newest first</option>
+            <option value="price_asc" {% if filters.get('sort')=='price_asc' %}selected{% endif %}>Price: low to high</option>
+            <option value="price_desc" {% if filters.get('sort')=='price_desc' %}selected{% endif %}>Price: high to low</option>
+          </select></div><br>
+        <button class="btn btn-primary full" type="submit">Apply filters</button>
+        <a class="btn btn-ghost full" href="{{ url_for('main.products') }}">Reset</a>
+      </form>
+    </aside>
+
+    <div>
+      {% if products %}
+        <div class="product-grid">
+          {% for product in products %}{% include 'partials/product_card.html' %}{% endfor %}
+        </div>
+        {% set args = filters.to_dict(flat=True) %}
+        {% set _ = args.pop('page', None) %}
+        <nav class="pagination">
+          {% if pagination.has_prev %}
+            <a class="btn btn-ghost btn-sm" href="{{ url_for('main.products', page=pagination.prev_num, **args) }}">&larr; Previous</a>
+          {% endif %}
+          <span class="muted">Page {{ pagination.page }} of {{ pagination.pages or 1 }}</span>
+          {% if pagination.has_next %}
+            <a class="btn btn-ghost btn-sm" href="{{ url_for('main.products', page=pagination.next_num, **args) }}">Next &rarr;</a>
+          {% endif %}
+        </nav>
+      {% else %}
+        <p class="empty">No products match your filters yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

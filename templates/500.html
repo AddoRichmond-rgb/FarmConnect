@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Something went wrong — FarmConnect{% endblock %}
+{% block content %}
+<section class="container section error-page">
+  <h1>500</h1><h2>Something went wrong on our end</h2>
+  <p class="muted">Please try again in a moment.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('main.index') }}">Back home</a>
+</section>
+{% endblock %}

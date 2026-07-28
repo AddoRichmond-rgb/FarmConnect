@@ -1,0 +1,39 @@
+{% extends 'customer/_layout.html' %}
+{% set heading = 'Checkout' %}
+{% block panel %}
+<div class="checkout-grid">
+  <form class="card form" method="post" novalidate data-validate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <h3>Delivery details</h3>
+    <div class="field"><label for="full_name">Full name</label>
+      <input id="full_name" name="full_name" required minlength="3"
+             value="{{ form.get('full_name', user.full_name) }}"></div>
+    <div class="two-col">
+      <div class="field"><label for="phone">Phone number</label>
+        <input id="phone" name="phone" required minlength="7"
+               value="{{ form.get('phone', user.phone or '') }}"></div>
+      <div class="field"><label for="email">Email</label>
+        <input id="email" name="email" type="email" required
+               value="{{ form.get('email', user.email) }}"></div>
+    </div>
+    <div class="field"><label for="address">Delivery address</label>
+      <textarea id="address" name="address" rows="3" required minlength="6">{{ form.get('address', (user.customer.address if user.customer else '') or '') }}</textarea></div>
+
+    <h3>Payment method</h3>
+    <label class="radio-row"><input type="radio" name="payment_method" value="cash" checked> Cash on delivery</label>
+    <label class="radio-row"><input type="radio" name="payment_method" value="momo"> Mobile Money (simulated)</label>
+    <label class="radio-row"><input type="radio" name="payment_method" value="card"> Credit / debit card (simulated)</label>
+
+    <button class="btn btn-primary btn-lg full" type="submit">Place order</button>
+  </form>
+
+  <div class="card">
+    <h3>Order summary</h3>
+    {% for item in items %}
+      <div class="summary-row"><span>{{ item.product.name }} × {{ item.quantity }}</span>
+        <span>GHS {{ '%.2f'|format(item.subtotal) }}</span></div>
+    {% endfor %}
+    <div class="summary-row total"><span>Total</span><span>GHS {{ '%.2f'|format(total) }}</span></div>
+  </div>
+</div>
+{% endblock %}

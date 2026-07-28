@@ -1,0 +1,31 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = 'Manage orders' %}
+{% block panel %}
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for o in orders %}
+        <tr>
+          <td>#{{ o.id }}</td>
+          <td>{{ o.created_at.strftime('%d %b %Y') }}</td>
+          <td>{{ o.full_name }}<div class="muted small">{{ o.phone }} · {{ o.address }}</div></td>
+          <td>{{ o.items|length }}</td>
+          <td>GHS {{ '%.2f'|format(o.total) }}</td>
+          <td>
+            <form class="inline-form" method="post" action="{{ url_for('admin.update_order_status', order_id=o.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <select name="status">
+                {% for s in ['pending','confirmed','shipped','delivered','cancelled'] %}
+                  <option value="{{ s }}" {% if o.status == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+              <button class="btn btn-ghost btn-sm" type="submit">Update</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}<tr><td colspan="6" class="muted">No orders yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

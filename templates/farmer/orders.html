@@ -1,0 +1,18 @@
+{% extends 'farmer/_layout.html' %}
+{% set heading = 'Orders for your products' %}
+{% block panel %}
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Order</th><th>Date</th><th>Product</th><th>Qty</th><th>Value</th><th>Buyer</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for i in items %}
+        <tr><td>#{{ i.order_id }}</td><td>{{ i.order.created_at.strftime('%d %b %Y') }}</td>
+          <td>{{ i.product.name }}</td><td>{{ i.quantity }}</td>
+          <td>GHS {{ '%.2f'|format(i.price * i.quantity) }}</td>
+          <td>{{ i.order.full_name }}<div class="muted small">{{ i.order.phone }}</div></td>
+          <td><span class="pill pill-{{ i.order.status }}">{{ i.order.status }}</span></td></tr>
+      {% else %}<tr><td colspan="7" class="muted">No orders yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

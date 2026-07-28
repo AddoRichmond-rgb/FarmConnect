@@ -1,0 +1,36 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = (role|capitalize ~ 's') if role else 'All users' %}
+{% set sub = 'Suspend or delete accounts. Administrator accounts are protected.' %}
+{% block panel %}
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for u in users %}
+        <tr>
+          <td><strong>{{ u.full_name }}</strong>
+            {% if u.farmer %}<div class="muted small">{{ u.farmer.farm_name or '—' }} · {{ u.farmer.farm_location or '—' }}</div>{% endif %}</td>
+          <td>{{ u.email }}</td>
+          <td><span class="pill">{{ u.role }}</span></td>
+          <td>{{ u.created_at.strftime('%d %b %Y') if u.created_at }}</td>
+          <td><span class="pill pill-{{ 'approved' if u.status == 'active' else 'rejected' }}">{{ u.status }}</span></td>
+          <td class="row-actions">
+            {% if u.role != 'admin' %}
+              <form method="post" action="{{ url_for('admin.toggle_suspend', user_id=u.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-ghost btn-sm" type="submit">
+                  {{ 'Reactivate' if u.status == 'suspended' else 'Suspend' }}</button>
+              </form>
+              <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
+                    onsubmit="return confirm('Delete this user and all their data?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            {% else %}<span class="muted small">Protected</span>{% endif %}
+          </td>
+        </tr>
+      {% else %}<tr><td colspan="6" class="muted">No users found.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

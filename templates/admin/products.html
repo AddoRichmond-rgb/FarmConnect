@@ -1,0 +1,51 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = (status|capitalize ~ ' products') if status else 'All products' %}
+{% set sub = 'Approve a product to publish it, or reject it with a reason for the farmer.' %}
+{% block panel %}
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Product</th><th>Farmer</th><th>Category</th><th>Price</th><th>Status</th><th>Review</th></tr></thead>
+    <tbody>
+      {% for p in products %}
+        <tr>
+          <td>
+            <div class="prod-cell">
+              {% if p.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ p.image) }}" alt="{{ p.name }}">
+              {% endif %}
+              <div><strong>{{ p.name }}</strong>
+                <div class="muted small">{{ p.quantity }} {{ p.unit }} · {{ p.created_at.strftime('%d %b %Y') }}</div></div>
+            </div>
+          </td>
+          <td>{{ p.farmer.farm_name or p.farmer.user.full_name }}
+            <div class="muted small">{{ p.location or '—' }}</div></td>
+          <td>{{ p.category.name }}</td>
+          <td>GHS {{ '%.2f'|format(p.price) }}</td>
+          <td><span class="pill pill-{{ p.status }}">{{ p.status }}</span>
+            {% if p.rejection_reason %}<div class="muted small">{{ p.rejection_reason }}</div>{% endif %}</td>
+          <td class="row-actions">
+            {% if p.status != 'approved' %}
+              <form method="post" action="{{ url_for('admin.approve_product', product_id=p.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-primary btn-sm" type="submit">Approve</button>
+              </form>
+            {% endif %}
+            {% if p.status != 'rejected' %}
+              <form method="post" action="{{ url_for('admin.reject_product', product_id=p.id) }}" class="reject-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="reason" placeholder="Rejection reason" maxlength="255">
+                <button class="btn btn-ghost btn-sm" type="submit">Reject</button>
+              </form>
+            {% endif %}
+            <form method="post" action="{{ url_for('admin.delete_product', product_id=p.id) }}"
+                  onsubmit="return confirm('Delete this product?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}<tr><td colspan="6" class="muted">Nothing to review.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

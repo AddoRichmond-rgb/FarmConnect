@@ -1,0 +1,33 @@
+{% extends 'farmer/_layout.html' %}
+{% set heading = (status|capitalize ~ ' products') if status else 'My products' %}
+{% set sub = 'Products are only visible to customers once an administrator approves them.' %}
+{% block panel %}
+<div class="card">
+  <div class="section-head"><h3>{{ products|length }} product(s)</h3>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('farmer.add_product') }}">+ Add product</a></div>
+  <table class="table">
+    <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for p in products %}
+        <tr>
+          <td><strong>{{ p.name }}</strong>
+            {% if p.status == 'rejected' and p.rejection_reason %}
+              <div class="muted small">Reason: {{ p.rejection_reason }}</div>{% endif %}</td>
+          <td>{{ p.category.name }}</td>
+          <td>GHS {{ '%.2f'|format(p.price) }}/{{ p.unit }}</td>
+          <td>{{ p.quantity }}</td>
+          <td><span class="pill pill-{{ p.status }}">{{ p.status }}</span></td>
+          <td class="row-actions">
+            <a class="btn btn-ghost btn-sm" href="{{ url_for('farmer.edit_product', product_id=p.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('farmer.delete_product', product_id=p.id) }}"
+                  onsubmit="return confirm('Delete this product?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}<tr><td colspan="6" class="muted">Nothing here yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<article class="product-card">
+  <a class="product-media" href="{{ url_for('main.product_detail', product_id=product.id) }}">
+    {% if product.image %}
+      <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}"
+           alt="{{ product.name }}" loading="lazy">
+    {% else %}
+      <div class="product-placeholder">🥬</div>
+    {% endif %}
+    <span class="pill pill-category">{{ product.category.name }}</span>
+  </a>
+  <div class="product-body">
+    <h3><a href="{{ url_for('main.product_detail', product_id=product.id) }}">{{ product.name }}</a></h3>
+    <p class="muted small">{{ product.farmer.farm_name or product.farmer.user.full_name }}
+      {% if product.location %} · {{ product.location }}{% endif %}</p>
+    <div class="product-foot">
+      <span class="price">GHS {{ '%.2f'|format(product.price) }}<small>/{{ product.unit }}</small></span>
+      {% if current_user and current_user.role == 'customer' %}
+        <form method="post" action="{{ url_for('customer.add_to_cart', product_id=product.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-primary btn-sm" type="submit">Add</button>
+        </form>
+      {% else %}
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('main.product_detail', product_id=product.id) }}">View</a>
+      {% endif %}
+    </div>
+  </div>
+</article>

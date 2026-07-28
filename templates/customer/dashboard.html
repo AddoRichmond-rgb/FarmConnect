@@ -1,0 +1,32 @@
+{% extends 'customer/_layout.html' %}
+{% set heading = 'My dashboard' %}
+{% set sub = 'Your orders, cart and favourites at a glance.' %}
+{% block panel %}
+<div class="stat-grid">
+  <div class="stat card"><span>Orders placed</span><strong>{{ stats.orders }}</strong></div>
+  <div class="stat card"><span>Items in cart</span><strong>{{ stats.cart }}</strong></div>
+  <div class="stat card"><span>Favourites</span><strong>{{ stats.wishlist }}</strong></div>
+  <div class="stat card good"><span>Total spent</span><strong>GHS {{ '%.2f'|format(stats.spent) }}</strong></div>
+</div>
+
+<div class="card">
+  <h3>Recent orders</h3>
+  <table class="table">
+    <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for o in orders %}
+        <tr><td>#{{ o.id }}</td><td>{{ o.created_at.strftime('%d %b %Y') }}</td>
+          <td>GHS {{ '%.2f'|format(o.total) }}</td>
+          <td><span class="pill pill-{{ o.status }}">{{ o.status }}</span></td></tr>
+      {% else %}<tr><td colspan="4" class="muted">No orders yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Notifications</h3>
+  {% for n in notifications %}
+    <p class="notice">{{ n.message }}<span class="muted small"> · {{ n.created_at.strftime('%d %b %H:%M') }}</span></p>
+  {% else %}<p class="muted">Nothing new.</p>{% endfor %}
+</div>
+{% endblock %}

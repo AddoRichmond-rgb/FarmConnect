@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Page not found — FarmConnect{% endblock %}
+{% block content %}
+<section class="container section error-page">
+  <h1>404</h1><h2>We couldn't find that page</h2>
+  <p class="muted">The link may be broken or the product may have been removed.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('main.index') }}">Back home</a>
+</section>
+{% endblock %}

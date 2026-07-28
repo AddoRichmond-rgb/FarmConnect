@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% set panel_title = 'Customer panel' %}
+{% set links = [
+  (url_for('customer.dashboard'), 'Dashboard'),
+  (url_for('main.products'), 'Browse products'),
+  (url_for('customer.cart'), 'Shopping cart'),
+  (url_for('customer.orders'), 'My orders'),
+  (url_for('customer.wishlist'), 'Favourites'),
+  (url_for('customer.profile'), 'Profile')
+] %}
+{% block content %}
+{% include 'partials/dash_head.html' %}
+<div class="container dash-layout">
+  {% include 'partials/sidebar.html' %}
+  <div class="dash-main">{% block panel %}{% endblock %}</div>
+</div>
+{% endblock %}

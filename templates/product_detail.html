@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — FarmConnect{% endblock %}
+{% block description %}{{ (product.description or product.name)[:150] }}{% endblock %}
+{% block breadcrumb %}
+<div class="container breadcrumb">
+  <a href="{{ url_for('main.index') }}">Home</a> <span>/</span>
+  <a href="{{ url_for('main.products') }}">Products</a> <span>/</span>
+  <a href="{{ url_for('main.products', category=product.category_id) }}">{{ product.category.name }}</a>
+  <span>/</span> <span>{{ product.name }}</span>
+</div>
+{% endblock %}
+{% block content %}
+<section class="container section detail-grid">
+  <div>
+    <div class="detail-media">
+      {% if product.image %}
+        <img id="mainImage" src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="{{ product.name }}">
+      {% else %}<div class="product-placeholder big">🥬</div>{% endif %}
+    </div>
+    {% if product.images %}
+      <div class="thumb-row">
+        <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="{{ product.name }}">
+        {% for img in product.images %}
+          <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ img.filename) }}" alt="{{ product.name }}">
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="detail-body">
+    <span class="pill pill-category">{{ product.category.name }}</span>
+    <h1>{{ product.name }}</h1>
+    <p class="price big">GHS {{ '%.2f'|format(product.price) }}<small>/{{ product.unit }}</small></p>
+    <p class="muted">Sold by <strong>{{ product.farmer.farm_name or product.farmer.user.full_name }}</strong>
+      {% if product.location %} · {{ product.location }}{% endif %}</p>
+    <p class="muted small">Listed {{ product.created_at.strftime('%d %b %Y') }} ·
+      {{ product.quantity }} {{ product.unit }} available ·
+      Rating {{ product.average_rating }}/5</p>
+    <p class="prose">{{ product.description or 'No description provided.' }}</p>
+
+    {% if current_user and current_user.role == 'customer' %}
+      <form class="inline-form" method="post" action="{{ url_for('customer.add_to_cart', product_id=product.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity or 1 }}">
+        <button class="btn btn-primary btn-lg" type="submit">Add to cart</button>
+      </form>
+      <form method="post" action="{{ url_for('customer.toggle_wishlist', product_id=product.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-ghost" type="submit">♡ Save to favourites</button>
+      </form>
+    {% else %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">Log in to order</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="container section narrow">
+  <h2>Reviews ({{ product.reviews|length }})</h2>
+  {% for review in product.reviews %}
+    <div class="card review">
+      <strong>{{ review.user.full_name }}</strong>
+      <span class="stars">{{ '★' * review.rating }}{{ '☆' * (5 - review.rating) }}</span>
+      <p>{{ review.comment }}</p>
+    </div>
+  {% else %}
+    <p class="muted">No reviews yet.</p>
+  {% endfor %}
+
+  {% if current_user and current_user.role == 'customer' %}
+    <form class="card form" method="post" action="{{ url_for('main.add_review', product_id=product.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="rating">Your rating</label>
+        <select id="rating" name="rating">
+          {% for n in [5,4,3,2,1] %}<option value="{{ n }}">{{ n }} star{{ '' if n == 1 else 's' }}</option>{% endfor %}
+        </select></div>
+      <div class="field"><label for="comment">Comment</label>
+        <textarea id="comment" name="comment" rows="3" maxlength="1000"></textarea></div>
+      <button class="btn btn-primary" type="submit">Post review</button>
+    </form>
+  {% endif %}
+</section>
+
+{% if related %}
+<section class="container section">
+  <h2>Related products</h2>
+  <div class="product-grid">
+    {% for product in related %}{% include 'partials/product_card.html' %}{% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

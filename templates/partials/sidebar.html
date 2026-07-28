@@ -1,0 +1,8 @@
+{# Reusable dashboard sidebar. `links` is a list of (endpoint, label) tuples. #}
+<aside class="sidebar">
+  <p class="sidebar-title">{{ panel_title }}</p>
+  {% for endpoint, label in links %}
+    <a href="{{ endpoint }}" class="{{ 'active' if request.path == endpoint else '' }}">{{ label }}</a>
+  {% endfor %}
+  <a href="{{ url_for('auth.logout') }}" class="danger">Logout</a>
+</aside>

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Register — FarmConnect{% endblock %}
+{% block content %}
+<section class="auth-wrap"><div class="container auth-grid">
+  <div class="auth-art">
+    <h2>Join FarmConnect</h2>
+    <p>Buy straight from the farm, or sell your harvest to customers near you.</p>
+  </div>
+  <form class="card form" method="post" novalidate data-validate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <h1>Create account</h1>
+
+    <div class="role-picker">
+      <label class="role-option">
+        <input type="radio" name="role" value="customer" checked> <span>I'm a customer</span>
+      </label>
+      <label class="role-option">
+        <input type="radio" name="role" value="farmer"> <span>I'm a farmer</span>
+      </label>
+    </div>
+
+    <div class="field"><label for="full_name">Full name</label>
+      <input id="full_name" name="full_name" required minlength="3" value="{{ form.get('full_name','') }}"></div>
+    <div class="field"><label for="email">Email</label>
+      <input id="email" name="email" type="email" required value="{{ form.get('email','') }}"></div>
+    <div class="field"><label for="phone">Phone number</label>
+      <input id="phone" name="phone" value="{{ form.get('phone','') }}"></div>
+
+    <div class="two-col">
+      <div class="field"><label for="password">Password</label>
+        <input id="password" name="password" type="password" required minlength="8"></div>
+      <div class="field"><label for="confirm_password">Confirm password</label>
+        <input id="confirm_password" name="confirm_password" type="password" required minlength="8"></div>
+    </div>
+
+    <div id="customerFields">
+      <div class="field"><label for="address">Delivery address</label>
+        <input id="address" name="address" value="{{ form.get('address','') }}"></div>
+    </div>
+
+    <div id="farmerFields" hidden>
+      <div class="two-col">
+        <div class="field"><label for="farm_name">Farm name</label>
+          <input id="farm_name" name="farm_name" value="{{ form.get('farm_name','') }}"></div>
+        <div class="field"><label for="farm_location">Farm location</label>
+          <input id="farm_location" name="farm_location" value="{{ form.get('farm_location','') }}"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg full" type="submit">Create account</button>
+    <p class="muted small center">Already registered?
+      <a class="link" href="{{ url_for('auth.login') }}">Log in</a></p>
+  </form>
+</div></section>
+{% endblock %}

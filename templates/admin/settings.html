@@ -1,0 +1,33 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = 'Settings & messages' %}
+{% block panel %}
+<div class="card">
+  <h3>Change your password</h3>
+  <form class="form" method="post" action="{{ url_for('auth.change_password') }}" data-validate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field"><label for="current_password">Current password</label>
+      <input id="current_password" name="current_password" type="password" required></div>
+    <div class="two-col">
+      <div class="field"><label for="new_password">New password</label>
+        <input id="new_password" name="new_password" type="password" required minlength="8"></div>
+      <div class="field"><label for="confirm_password">Confirm new password</label>
+        <input id="confirm_password" name="confirm_password" type="password" required minlength="8"></div>
+    </div>
+    <button class="btn btn-primary" type="submit">Update password</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Contact messages</h3>
+  <table class="table">
+    <thead><tr><th>From</th><th>Subject</th><th>Message</th><th>Received</th></tr></thead>
+    <tbody>
+      {% for m in messages %}
+        <tr><td>{{ m.name }}<div class="muted small">{{ m.email }}</div></td>
+          <td>{{ m.subject or '—' }}</td><td>{{ m.message }}</td>
+          <td>{{ m.created_at.strftime('%d %b %Y') }}</td></tr>
+      {% else %}<tr><td colspan="4" class="muted">No messages.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

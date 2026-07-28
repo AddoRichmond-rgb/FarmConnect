@@ -1,0 +1,64 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = 'Administrator dashboard' %}
+{% set sub = 'Marketplace health, approvals and revenue.' %}
+{% block panel %}
+<div class="stat-grid">
+  <div class="stat card"><span>Total farmers</span><strong>{{ stats.farmers }}</strong></div>
+  <div class="stat card"><span>Total customers</span><strong>{{ stats.customers }}</strong></div>
+  <div class="stat card"><span>Total products</span><strong>{{ stats.products }}</strong></div>
+  <div class="stat card warn"><span>Pending products</span><strong>{{ stats.pending }}</strong></div>
+  <div class="stat card good"><span>Approved products</span><strong>{{ stats.approved }}</strong></div>
+  <div class="stat card bad"><span>Rejected products</span><strong>{{ stats.rejected }}</strong></div>
+  <div class="stat card"><span>Orders today</span><strong>{{ stats.orders_today }}</strong></div>
+  <div class="stat card good"><span>Total sales</span><strong>GHS {{ '%.2f'|format(stats.sales) }}</strong></div>
+</div>
+
+<div class="chart-grid">
+  <div class="card"><h3>Revenue — last 7 days</h3>
+    <canvas id="revenueChart" height="220"></canvas></div>
+  <div class="card"><h3>Orders — last 7 days</h3>
+    <canvas id="ordersChart" height="220"></canvas></div>
+  <div class="card"><h3>Product status</h3>
+    <canvas id="statusChart" height="220"></canvas></div>
+  <div class="card"><h3>Users</h3>
+    <canvas id="usersChart" height="220"></canvas></div>
+</div>
+
+<div class="card">
+  <h3>Recent activity — products</h3>
+  <table class="table">
+    <thead><tr><th>Product</th><th>Farmer</th><th>Uploaded</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for p in recent_products %}
+        <tr><td>{{ p.name }}</td>
+          <td>{{ p.farmer.farm_name or p.farmer.user.full_name }}</td>
+          <td>{{ p.created_at.strftime('%d %b %H:%M') }}</td>
+          <td><span class="pill pill-{{ p.status }}">{{ p.status }}</span></td></tr>
+      {% else %}<tr><td colspan="4" class="muted">No products yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Recent activity — orders</h3>
+  <table class="table">
+    <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for o in recent_orders %}
+        <tr><td>#{{ o.id }}</td><td>{{ o.full_name }}</td>
+          <td>GHS {{ '%.2f'|format(o.total) }}</td>
+          <td><span class="pill pill-{{ o.status }}">{{ o.status }}</span></td></tr>
+      {% else %}<tr><td colspan="4" class="muted">No orders yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Chart data is rendered server-side into a JSON island, then drawn by charts.js
+  window.FC_CHART = {{ chart|tojson }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,33 @@
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand brand-light" href="{{ url_for('main.index') }}">
+        <span class="brand-mark">🌿</span><span>Farm<strong>Connect</strong></span>
+      </a>
+      <p class="footer-text">Connecting hard-working farmers directly with the people
+        who eat what they grow. Every product is reviewed before it reaches you.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <a href="{{ url_for('main.products') }}">Browse products</a>
+      <a href="{{ url_for('main.about') }}">About us</a>
+      <a href="{{ url_for('main.faq') }}">FAQ</a>
+      <a href="{{ url_for('main.contact') }}">Contact</a>
+    </div>
+    <div>
+      <h4>For farmers</h4>
+      <a href="{{ url_for('auth.register') }}">Become a seller</a>
+      <a href="{{ url_for('auth.login') }}">Farmer login</a>
+    </div>
+    <div>
+      <h4>Categories</h4>
+      {% for c in nav_categories[:6] %}
+        <a href="{{ url_for('main.products', category=c.id) }}">{{ c.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    <span>&copy; {{ now.year }} FarmConnect. All rights reserved.</span>
+    <span>Built by Richmond, Leslie, Clifford, Ganiu and Samuel</span>
+  </div>
+</footer>

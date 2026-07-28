@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="container hero-inner">
+    <span class="eyebrow reveal">Farm to table, no middleman</span>
+    <h1 class="reveal">Fresh produce, straight<br>from the people who grow it.</h1>
+    <p class="reveal">Every item on FarmConnect is uploaded by a verified farmer and
+      reviewed by our team before it is published. Fair prices for farmers,
+      honest food for you.</p>
+    <div class="hero-actions reveal">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('main.products') }}">Browse products</a>
+      <a class="btn btn-outline btn-lg" href="{{ url_for('auth.register') }}">Sell your harvest</a>
+    </div>
+    <div class="hero-stats reveal">
+      <div><strong>13</strong><span>Categories</span></div>
+      <div><strong>100%</strong><span>Admin reviewed</span></div>
+      <div><strong>0</strong><span>Middlemen</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="container section">
+  <div class="section-head">
+    <h2>Shop by category</h2>
+    <a class="link" href="{{ url_for('main.products') }}">See all →</a>
+  </div>
+  <div class="category-grid">
+    {% for c in categories %}
+      <a class="category-chip reveal" href="{{ url_for('main.products', category=c.id) }}">{{ c.name }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="container section">
+  <div class="section-head">
+    <h2>Freshly approved</h2>
+    <a class="link" href="{{ url_for('main.products') }}">Browse all →</a>
+  </div>
+  {% if featured %}
+    <div class="product-grid">
+      {% for product in featured %}{% include 'partials/product_card.html' %}{% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">No approved products yet. Farmers, upload your harvest —
+      an administrator will review it right away.</p>
+  {% endif %}
+</section>
+
+<section class="band">
+  <div class="container steps">
+    <div class="step reveal"><span>1</span><h3>Farmer uploads</h3>
+      <p>A verified farmer lists the harvest with photos, price and quantity.</p></div>
+    <div class="step reveal"><span>2</span><h3>Admin reviews</h3>
+      <p>Our team checks every listing. Nothing goes live without approval.</p></div>
+    <div class="step reveal"><span>3</span><h3>You order</h3>
+      <p>Add to cart, check out, and track your order until it arrives.</p></div>
+  </div>
+</section>
+{% endblock %}

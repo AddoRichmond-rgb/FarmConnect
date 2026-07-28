@@ -1,0 +1,37 @@
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a class="brand" href="{{ url_for('main.index') }}">
+      <span class="brand-mark">🌿</span><span>Farm<strong>Connect</strong></span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="{{ url_for('main.index') }}">Home</a>
+      <a href="{{ url_for('main.products') }}">Browse</a>
+      <a href="{{ url_for('main.about') }}">About</a>
+      <a href="{{ url_for('main.faq') }}">FAQ</a>
+      <a href="{{ url_for('main.contact') }}">Contact</a>
+
+      <form class="nav-search" action="{{ url_for('main.products') }}" method="get" autocomplete="off">
+        <input type="search" name="q" id="navSearch" placeholder="Search produce…"
+               value="{{ request.args.get('q', '') }}" maxlength="80">
+        <ul class="suggestions" id="suggestions"></ul>
+      </form>
+
+      {% if current_user %}
+        {% if current_user.role == 'customer' %}
+          <a class="cart-link" href="{{ url_for('customer.cart') }}">Cart
+            <span class="badge">{{ cart_count }}</span></a>
+        {% endif %}
+        <a class="btn btn-ghost" href="{{ url_for(current_user.role ~ '.dashboard') }}">Dashboard</a>
+        <a class="btn btn-primary" href="{{ url_for('auth.logout') }}">Logout</a>
+      {% else %}
+        <a class="btn btn-ghost" href="{{ url_for('auth.login') }}">Login</a>
+        <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

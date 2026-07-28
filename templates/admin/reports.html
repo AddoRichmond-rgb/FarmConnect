@@ -1,0 +1,34 @@
+{% extends 'admin/_layout.html' %}
+{% set heading = 'Reports' %}
+{% set sub = 'Best sellers and top-earning farmers.' %}
+{% block panel %}
+<div class="stat-grid">
+  <div class="stat card good"><span>Total sales</span><strong>GHS {{ '%.2f'|format(total_sales) }}</strong></div>
+</div>
+<div class="card">
+  <h3>Top products</h3>
+  <table class="table">
+    <thead><tr><th>Product</th><th>Farmer</th><th>Units sold</th></tr></thead>
+    <tbody>
+      {% for product, sold in top_products %}
+        <tr><td>{{ product.name }}</td>
+          <td>{{ product.farmer.farm_name or product.farmer.user.full_name }}</td>
+          <td>{{ sold }}</td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No sales data yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="card">
+  <h3>Top farmers by revenue</h3>
+  <table class="table">
+    <thead><tr><th>Farmer</th><th>Location</th><th>Revenue</th></tr></thead>
+    <tbody>
+      {% for farmer, earned in top_farmers %}
+        <tr><td>{{ farmer.farm_name or farmer.user.full_name }}</td>
+          <td>{{ farmer.farm_location or '—' }}</td>
+          <td>GHS {{ '%.2f'|format(earned) }}</td></tr>
+      {% else %}<tr><td colspan="3" class="muted">No sales data yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'customer/_layout.html' %}
+{% set heading = 'Shopping cart' %}
+{% block panel %}
+<div class="card">
+  <table class="table">
+    <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr></thead>
+    <tbody>
+      {% for item in items %}
+        <tr>
+          <td><strong>{{ item.product.name }}</strong>
+            <div class="muted small">{{ item.product.farmer.farm_name or item.product.farmer.user.full_name }}</div></td>
+          <td>GHS {{ '%.2f'|format(item.product.price) }}</td>
+          <td>
+            <form class="qty-form" method="post" action="{{ url_for('customer.update_cart', item_id=item.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                     max="{{ item.product.quantity or item.quantity }}">
+              <button class="btn btn-ghost btn-sm" type="submit">Update</button>
+            </form>
+          </td>
+          <td>GHS {{ '%.2f'|format(item.subtotal) }}</td>
+          <td>
+            <form method="post" action="{{ url_for('customer.remove_from_cart', item_id=item.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-danger btn-sm" type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}<tr><td colspan="5" class="muted">Your cart is empty.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+
+  {% if items %}
+    <div class="cart-foot">
+      <span class="price big">Total: GHS {{ '%.2f'|format(total) }}</span>
+      <a class="btn btn-primary btn-lg" href="{{ url_for('customer.checkout') }}">Proceed to checkout</a>
+    </div>
+  {% else %}
+    <a class="btn btn-primary" href="{{ url_for('main.products') }}">Start shopping</a>
+  {% endif %}
+</div>
+{% endblock %}

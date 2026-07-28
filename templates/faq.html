@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}FAQ — FarmConnect{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container">
+  <h1>Frequently asked questions</h1><p>Everything you need before your first order.</p>
+</div></section>
+<section class="container section narrow">
+  <div class="accordion">
+    {% set faqs = [
+      ('How do I buy on FarmConnect?', 'Register as a customer, browse approved products, add them to your cart and check out. You can pay cash on delivery, or simulate Mobile Money or card payment.'),
+      ('Why is my product not showing after upload?', 'Every product must be approved by an administrator first. Check the Pending tab on your farmer dashboard; if it was rejected you will see the reason.'),
+      ('How long does approval take?', 'Most listings are reviewed within a few hours. You receive a notification the moment the decision is made.'),
+      ('Can I edit an approved product?', 'Yes. Editing sends the product back to pending so an administrator can re-check the changes.'),
+      ('What payment methods are supported?', 'Cash on delivery is fully supported. Mobile Money and card payments are simulated in this version.'),
+      ('How do I become a farmer on the platform?', 'Choose “Farmer” when registering and add your farm name and location. You can start uploading immediately.')
+    ] %}
+    {% for question, answer in faqs %}
+      <div class="accordion-item">
+        <button class="accordion-trigger" type="button">{{ question }}<span>+</span></button>
+        <div class="accordion-panel"><p>{{ answer }}</p></div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

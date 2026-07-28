@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Contact FarmConnect{% endblock %}
+{% block content %}
+<section class="page-head"><div class="container">
+  <h1>Contact us</h1><p>Questions, partnerships or support — we read everything.</p>
+</div></section>
+<section class="container section narrow">
+  <form class="card form" method="post" novalidate data-validate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field"><label for="name">Full name</label>
+      <input id="name" name="name" required minlength="3" maxlength="120"></div>
+    <div class="field"><label for="email">Email</label>
+      <input id="email" name="email" type="email" required maxlength="160"></div>
+    <div class="field"><label for="subject">Subject</label>
+      <input id="subject" name="subject" maxlength="160"></div>
+    <div class="field"><label for="message">Message</label>
+      <textarea id="message" name="message" rows="6" required minlength="10" maxlength="2000"></textarea></div>
+    <button class="btn btn-primary btn-lg" type="submit">Send message</button>
+  </form>
+</section>
+{% endblock %}

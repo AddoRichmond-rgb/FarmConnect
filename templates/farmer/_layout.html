@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% set panel_title = 'Farmer panel' %}
+{% set links = [
+  (url_for('farmer.dashboard'), 'Dashboard'),
+  (url_for('farmer.add_product'), 'Add product'),
+  (url_for('farmer.products'), 'All products'),
+  (url_for('farmer.products', status='pending'), 'Pending'),
+  (url_for('farmer.products', status='approved'), 'Approved'),
+  (url_for('farmer.products', status='rejected'), 'Rejected'),
+  (url_for('farmer.orders'), 'Orders'),
+  (url_for('farmer.profile'), 'Profile')
+] %}
+{% block content %}
+{% include 'partials/dash_head.html' %}
+<div class="container dash-layout">
+  {% include 'partials/sidebar.html' %}
+  <div class="dash-main">{% block panel %}{% endblock %}</div>
+</div>
+{% endblock %}
