@@ -1,125 +1,323 @@
-# FarmConnect — Farmer-to-Customer Marketplace
+#  FarmConnect
 
-A full-stack Flask + MySQL marketplace that connects farmers directly with
-customers. Farmers upload products; **nothing is visible to customers until an
-administrator approves it**.
+A web-based farmer-to-customer marketplace that connects farmers directly with customers, allowing agricultural products to be listed, discovered, and purchased through an online platform.
 
-Built with HTML5, CSS3, vanilla JavaScript, Python (Flask) and MySQL — no
-frontend frameworks.
+FarmConnect was developed as a full-stack web application with a focus on backend development, database management, authentication, product management, and cloud deployment.
 
----
+##  Project Overview
 
-## 1. Requirements
+FarmConnect aims to provide a digital marketplace where farmers can showcase their agricultural products while customers can browse available products and place orders.
 
-* Python 3.10+
-* MySQL 5.7+ / MariaDB 10.4+
-* pip
+The platform includes an administrative approval workflow to help manage users, products, and marketplace activity.
 
-## 2. Setup
+### Problem
 
-```bash
-# 1. unzip and enter the project
-cd farmconnect
+Farmers may have difficulty reaching customers directly and efficiently promoting their products.
 
-# 2. create a virtual environment
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+FarmConnect addresses this by providing an online platform where:
 
-# 3. install dependencies
-pip install -r requirements.txt
+- Farmers can list agricultural products.
+- Customers can browse available products.
+- Customers can place orders.
+- Administrators can manage marketplace activity.
+- Products can be reviewed and approved before becoming publicly available.
 
-# 4. create the database
-mysql -u root -p < database/schema.sql
+##  Key Features
 
-# 5. configure credentials
-cp .env.example .env              # then edit .env with your MySQL details
+###  Farmer Features
 
-# 6. run
-python app.py
-```
+- Farmer registration and authentication
+- Farmer profile management
+- Product creation and management
+- Product categorization
+- Product information management
+- Order management
 
-Open <http://127.0.0.1:5000>.
+###  Customer Features
 
-On first run the app creates any missing tables, seeds the 13 product
-categories and creates a default administrator:
+- Customer registration and authentication
+- Browse agricultural products
+- View product details
+- Browse products by category
+- Place orders
+- View order information
 
-```
-email:    admin@farmconnect.com
-password: Admin@12345      <-- change this immediately after logging in
-```
+###  Administration
 
-## 3. Project structure
+- Administrative authentication
+- User management
+- Product approval workflow
+- Category management
+- Marketplace monitoring
+- Notification management
 
-```
-farmconnect/
-├── app.py                 # application factory, blueprints, error handlers, seeding
-├── config.py              # environment-driven configuration
-├── extensions.py          # db + csrf instances
-├── models.py              # SQLAlchemy models (Model layer)
-├── utils.py               # auth decorators, upload validation, notifications
+##  System Architecture
+
+FarmConnect follows a traditional full-stack web application architecture.
+
+```text
+                    ┌─────────────────────┐
+                    │       User          │
+                    │ Farmer / Customer   │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    Web Interface    │
+                    │   HTML / CSS / JS   │
+                    │      Jinja2         │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      Flask App      │
+                    │      Backend        │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────┴──────────┐
+                    ▼                     ▼
+          ┌─────────────────┐   ┌─────────────────┐
+          │     MySQL       │   │   AWS Services  │
+          │    Database     │   │ RDS / Elastic   │
+          │                 │   │   Beanstalk     │
+          └─────────────────┘   └─────────────────┘
+ Technology Stack
+Backend
+Python
+Flask
+Jinja2
+Frontend
+HTML5
+CSS3
+JavaScript
+Database
+MySQL
+AWS RDS
+Cloud / Deployment
+AWS Elastic Beanstalk
+AWS RDS
+Development Tools
+Git
+GitHub
+Visual Studio Code
+ Database Models
+
+The application uses a relational database to manage users, products, orders, and other marketplace data.
+
+Key models include:
+
+User
+Farmer
+Customer
+Category
+Product
+Order
+OrderItem
+Notification
+Basic Relationship Structure
+User
+ ├── Farmer
+ │     └── Product
+ │            └── Category
+ │
+ └── Customer
+        └── Order
+              └── OrderItem
+                    └── Product
+ Authentication & Security
+
+The application includes authentication and access-control mechanisms for different types of users.
+
+The system distinguishes between different roles, including:
+
+Farmers
+Customers
+Administrators
+
+Sensitive configuration values such as database credentials and secret keys are stored using environment variables rather than being committed directly to the repository.
+
+Environment Variables
+
+Sensitive configuration should be stored in a local .env file.
+
+A template is provided through:
+
+.env.example
+
+Never commit the actual .env file to GitHub.
+
+📂 Project Structure
+
+A simplified version of the project structure is:
+
+FarmConnect/
+│
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── templates/
+│   ├── admin/
+│   ├── farmer/
+│   ├── customer/
+│   └── ...
+│
+├── models/
+│
+├── routes/
+│
+├── app.py
 ├── requirements.txt
 ├── .env.example
-├── database/
-│   └── schema.sql         # full MySQL schema with keys, indexes, seed categories
-├── routes/                # Controllers (Flask blueprints)
-│   ├── main.py            # home, browse, product detail, about, FAQ, contact
-│   ├── auth.py            # register, login, logout, change password
-│   ├── farmer.py          # product CRUD, approval tracking, orders, profile
-│   ├── customer.py        # cart, checkout, orders, wishlist, profile
-│   └── admin.py           # stats, users, product review, orders, reports
-├── templates/             # Views (Jinja2)
-│   ├── base.html          # shared layout
-│   ├── partials/          # navbar, footer, sidebar, product card
-│   ├── farmer/ customer/ admin/
-│   └── 403.html 404.html 500.html
-└── static/
-    ├── css/style.css      # complete design system, responsive + animations
-    ├── js/main.js         # nav, validation, suggestions, accordion, reveal
-    ├── js/charts.js       # admin dashboard charts (Chart.js)
-    ├── images/            # hero background
-    └── uploads/           # product images uploaded by farmers
-```
+├── .gitignore
+└── README.md
 
-## 4. Roles
+The exact structure may vary depending on the current version of the project.
 
-| Role | Can do |
-|------|--------|
-| **Customer** | Register, browse approved products, search & filter, view details, cart (add / update / remove), checkout, order history & status, wishlist, reviews, profile, change password |
-| **Farmer** | Register, upload products with images, edit, delete, track pending/approved/rejected status with rejection reasons, view orders for their products, profile |
-| **Admin** | Dashboard with stat cards & charts, manage all users, suspend/delete accounts, review queue, approve/reject/delete products, manage orders and statuses, reports, contact messages |
+ Getting Started
+Prerequisites
 
-## 5. Approval workflow
+Before running FarmConnect locally, make sure you have:
 
-```
-Farmer uploads product  ->  status = pending  ->  Admin reviews
-                                                   |
-                              approved -> visible to customers
-                              rejected -> hidden + reason sent to farmer
-```
+Python 3
+pip
+MySQL
+Git
+1. Clone the Repository
+git clone https://github.com/AddoRichmond-rgb/FarmConnect.git
+2. Navigate to the Project
+cd FarmConnect
+3. Create a Virtual Environment
 
-Editing an approved product returns it to `pending` for re-review.
+Windows:
 
-## 6. Checkout
+python -m venv venv
 
-Collects full name, phone, email, delivery address and payment method
-(cash on delivery, Mobile Money simulated, card simulated). On success the app
-creates the order, reduces stock, notifies each farmer involved and confirms to
-the customer.
+Activate it:
 
-## 7. Security
+venv\Scripts\activate
 
-* Passwords hashed with Werkzeug (`generate_password_hash` / `check_password_hash`)
-* CSRF protection on every POST form (Flask-WTF `CSRFProtect`)
-* SQL injection protection via SQLAlchemy parameterised queries
-* Server-side validation on every form, plus client-side validation for UX
-* File upload validation: extension allow-list, randomised filenames, 5 MB limit
-* Role-based authorisation decorators (`@role_required('admin')`)
-* Ownership checks so a farmer can only edit their own products
-* Suspended accounts blocked at login and on every request
-* HttpOnly, SameSite session cookies
+Linux/macOS:
 
-## 8. Deployment notes
+python3 -m venv venv
+source venv/bin/activate
+4. Install Dependencies
+pip install -r requirements.txt
+5. Configure Environment Variables
 
-Set `SECRET_KEY` to a long random value, set `FLASK_DEBUG=0`, serve behind
-Gunicorn + Nginx (`gunicorn "app:app"`), and enable HTTPS so
-`SESSION_COOKIE_SECURE` can be turned on.
+Create a .env file based on the provided example:
+
+cp .env.example .env
+
+On Windows, you can also create the file manually.
+
+Add your own:
+
+Database credentials
+Flask secret key
+AWS configuration where required
+6. Configure the Database
+
+Create a MySQL database and configure the corresponding connection details in your .env file.
+
+Example:
+
+MYSQL_HOST=your_host
+MYSQL_USER=your_username
+MYSQL_PASSWORD=your_password
+MYSQL_DB=your_database
+
+Do not use these example values in a production environment.
+
+7. Run the Application
+python app.py
+
+The application should then be available locally through the address shown by Flask.
+
+ Cloud Deployment
+
+FarmConnect was also developed with cloud deployment in mind.
+
+The project has been deployed using:
+
+AWS Elastic Beanstalk for application hosting
+AWS RDS for the MySQL database
+
+The database was configured using an AWS RDS instance, while the Flask application was deployed through Elastic Beanstalk.
+ Testing
+
+Testing during development included:
+
+User registration and authentication
+Farmer product creation
+Product browsing
+Product approval
+Category management
+Order creation
+Database operations
+Application deployment
+Role-based functionality
+ Challenges & Lessons Learned
+
+During development, I gained practical experience with:
+
+Building a Flask-based web application
+Designing relational database structures
+Connecting Flask applications to MySQL
+Implementing authentication and user roles
+Managing CRUD operations
+Working with Jinja2 templates
+Deploying applications to AWS
+Connecting an application to AWS RDS
+Managing environment variables
+Using Git and GitHub for version control
+Debugging application and database issues
+ Future Improvements
+
+Potential future improvements include:
+
+Real-time farmer/customer messaging
+Google authentication
+Online payment integration
+Improved product search and filtering
+Product reviews and ratings
+Improved notification system
+Mobile application
+Advanced administrator analytics
+Improved security monitoring
+Automated testing
+CI/CD deployment pipeline
+ Security Notice
+
+This repository is intended for educational and portfolio purposes.
+
+Sensitive information such as:
+
+Passwords
+API keys
+AWS credentials
+Database credentials
+Secret keys
+
+should never be committed to the repository.
+
+Use environment variables and keep the .env file private.
+
+ Author
+
+Richmond Addo
+
+BSc Cybersecurity Student
+University of Mines and Technology (UMaT), Ghana
+
+Areas of Interest
+Cybersecurity
+Web Application Security
+Network Security
+Cloud Security
+Python
+Ethical Hacking
+Security Automation
+
+If you find this project useful, feel free to explore the repository and review the implementation.
